@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Libro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="welcome-modal" id="welcomeModal" role="dialog" aria-modal="true" aria-labelledby="welcomeMessage">
+      <div class="welcome-card">
+        <p id="welcomeMessage">
+          Hola mi amorr, te hice este pequeño librito digital para ti mi niña,
+          espero te guste y lo disfrutes
+        </p>
+        <button class="welcome-button" id="closeWelcome" type="button">Abrir</button>
+      </div>
+    </div>
+
+    <main class="love-scene">
+      <div class="ambient ambient-one"></div>
+      <div class="ambient ambient-two"></div>
+
+      <section class="book-stage" aria-label="Libro interactivo">
+        <div class="book-wrap">
+          <div class="book-shadow"></div>
+          <article class="book" id="book" aria-live="polite">
+            <div class="book-cover left-cover">
+              <div class="cover-frame">
+                <span class="cover-mark" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <div class="book-spine" aria-hidden="true"></div>
+
+            <div class="page left-page">
+              <div class="page-media" id="leftMedia" aria-hidden="true"></div>
+            </div>
+
+            <div class="page right-page" id="turningPage">
+              <div class="page-media" id="rightMedia" aria-hidden="true"></div>
+            </div>
+
+            <div class="turn-sheet" aria-hidden="true">
+              <div class="turn-media" id="turnMedia"></div>
+            </div>
+            <div class="book-cover right-cover" aria-hidden="true"></div>
+          </article>
+        </div>
+
+        <div class="controls" aria-label="Controles del libro">
+          <button class="icon-button" id="prevPage" type="button" aria-label="Pagina anterior">
+            <span class="chevron chevron-left"></span>
+          </button>
+          <div class="progress" aria-hidden="true">
+            <span id="progressBar"></span>
+          </div>
+          <button class="icon-button" id="nextPage" type="button" aria-label="Pagina siguiente">
+            <span class="chevron chevron-right"></span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
