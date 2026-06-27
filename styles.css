@@ -1,0 +1,609 @@
+:root {
+  --paper: #fff9f0;
+  --paper-edge: #f1d8c7;
+  --cover: #f7b7c7;
+  --cover-deep: #e99db2;
+  --lilac: #d7c5f4;
+  --mint: #bfe8dc;
+  --butter: #ffe5a8;
+  --peach: #ffcbb6;
+  --background: #fff1df;
+  --progress: #e99db2;
+  --shadow: rgba(121, 87, 111, 0.28);
+  --control: rgba(255, 255, 255, 0.58);
+  --cream: #fffdf8;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--background);
+  overflow-x: hidden;
+}
+
+/* ── Welcome Modal ── */
+.welcome-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(255, 241, 223, 0.72);
+  backdrop-filter: blur(10px);
+  transition: opacity 220ms ease, visibility 220ms ease;
+}
+
+.welcome-modal.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.welcome-card {
+  width: min(420px, 100%);
+  padding: 30px 28px 26px;
+  border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 8px;
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: 0 28px 70px rgba(181, 134, 150, 0.22);
+  text-align: center;
+}
+
+.welcome-card p {
+  margin: 0 0 22px;
+  color: #8f6472;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(1.1rem, 4vw, 1.45rem);
+  line-height: 1.5;
+}
+
+.welcome-button {
+  min-width: 112px;
+  height: 42px;
+  border: 0;
+  border-radius: 999px;
+  color: #fffdf8;
+  background: var(--cover-deep);
+  box-shadow: 0 12px 24px rgba(181, 134, 150, 0.22);
+  cursor: pointer;
+  font: 700 0.95rem Arial, sans-serif;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.welcome-button:hover,
+.welcome-button:focus-visible {
+  background: #dc8da6;
+  transform: translateY(-1px);
+  outline: none;
+}
+
+/* ── Scene ── */
+.love-scene {
+  position: relative;
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 28px;
+  isolation: isolate;
+}
+
+.book-stage {
+  width: min(980px, 100%);
+  text-align: center;
+}
+
+.book-wrap {
+  position: relative;
+  width: min(900px, 100%);
+  margin: 0 auto;
+  /* Crucial for 3D page-turn effect */
+  perspective: 2200px;
+  perspective-origin: center center;
+}
+
+.book-shadow {
+  position: absolute;
+  right: 5%;
+  bottom: -26px;
+  left: 5%;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--shadow);
+  filter: blur(18px);
+  transition: filter 300ms ease, opacity 300ms ease;
+}
+
+/* ── Book ── */
+.book {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 22px 1fr;
+  min-height: clamp(480px, 62vw, 580px);
+  border-radius: 8px;
+  transform-style: preserve-3d;
+  user-select: none;
+}
+
+.page,
+.book-spine {
+  min-height: clamp(480px, 62vw, 580px);
+}
+
+.page {
+  grid-row: 1;
+  position: relative;
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y;
+  background:
+    linear-gradient(90deg, rgba(194, 154, 129, 0.16), transparent 11%, transparent 88%, rgba(188, 143, 150, 0.12)),
+    radial-gradient(circle at 22% 16%, rgba(255, 229, 168, 0.32), transparent 32%),
+    var(--paper);
+  box-shadow:
+    inset 0 0 0 1px rgba(188, 143, 150, 0.16),
+    inset 0 0 34px rgba(255, 255, 255, 0.48);
+}
+
+.page.is-grabbing {
+  cursor: grabbing;
+}
+
+.page::before {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(231, 180, 193, 0.45);
+  border-radius: 5px;
+  content: "";
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ── Page images — fill the page properly ── */
+.page-media {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  background-color: var(--paper);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;   /* fill the page */
+  opacity: 1;
+  will-change: opacity, transform;
+  transition: opacity 180ms ease;
+}
+
+/* When no image: show decorative gradient */
+.page-media:not(.has-image) {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.78), rgba(255, 255, 255, 0.36)),
+    radial-gradient(circle at 30% 20%, rgba(215, 197, 244, 0.38), transparent 28%),
+    radial-gradient(circle at 74% 78%, rgba(191, 232, 220, 0.42), transparent 30%),
+    rgba(255, 255, 255, 0.34);
+}
+
+.left-page {
+  grid-column: 1;
+  border-radius: 8px 2px 2px 8px;
+}
+
+.right-page {
+  grid-column: 3;
+  border-radius: 2px 8px 8px 2px;
+  transform-origin: left center;
+}
+
+/* ── Spine ── */
+.book-spine {
+  grid-column: 2;
+  grid-row: 1;
+  position: relative;
+  z-index: 2;
+  background:
+    linear-gradient(90deg, rgba(224, 166, 185, 0.46), rgba(255, 255, 255, 0.5), rgba(198, 165, 221, 0.38)),
+    var(--paper-edge);
+  box-shadow: inset 0 0 18px rgba(181, 134, 150, 0.26);
+}
+
+/* ── Covers ── */
+.book-cover {
+  position: absolute;
+  grid-row: 1;
+  top: -15px;
+  height: calc(100% + 30px);
+  width: calc(50% - 11px);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.42), transparent 46%),
+    linear-gradient(160deg, var(--cover), var(--cover-deep));
+  box-shadow: 0 24px 58px rgba(181, 134, 150, 0.26);
+}
+
+.left-cover {
+  left: -18px;
+  z-index: -1;
+  border-radius: 8px 2px 2px 8px;
+  transform: translateZ(-26px) rotateY(2deg);
+}
+
+.right-cover {
+  right: -18px;
+  z-index: -2;
+  border-radius: 2px 8px 8px 2px;
+  transform: translateZ(-30px) rotateY(-2deg);
+}
+
+.cover-frame {
+  position: absolute;
+  inset: 38px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.62);
+  border-radius: 6px;
+}
+
+.cover-mark {
+  width: 42px;
+  height: 42px;
+  margin-bottom: 14px;
+  border-radius: 50% 50% 0 50%;
+  background: linear-gradient(135deg, var(--butter), #fff8d9);
+  transform: rotate(45deg);
+  box-shadow:
+    -10px 10px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -8px 12px rgba(218, 153, 163, 0.18);
+}
+
+/* ══════════════════════════════════════════
+   TURN SHEET — realistic 3D page flip
+   ══════════════════════════════════════════ */
+.turn-sheet {
+  --turn-angle: 0deg;
+  --turn-lift: 4px;
+  --turn-duration: 680ms;
+  --turn-ease: cubic-bezier(0.165, 0.84, 0.44, 1);
+
+  position: absolute;
+  top: 0;
+  left: calc(50% + 11px);
+  z-index: 10;
+  width: calc(50% - 11px);
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transform: rotateY(var(--turn-angle));
+  transition: none;
+
+  /* The "front" face (page turning away) */
+  border-radius: 2px 8px 8px 2px;
+}
+
+.turn-sheet.is-active {
+  opacity: 1;
+}
+
+.turn-sheet.is-settling {
+  transition: transform var(--turn-duration) var(--turn-ease);
+}
+
+/* Front face of the turning page */
+.turn-front {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--paper);
+  /* Dynamic gradient shadow as the page lifts */
+  box-shadow:
+    -6px 0 20px rgba(181, 134, 150, 0.15),
+    8px 0 24px rgba(121, 87, 111, 0.12);
+}
+
+/* Back face of the turning page (what you see mid-flip) */
+.turn-back {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform: rotateY(180deg);
+  background:
+    linear-gradient(90deg, rgba(194,154,129,0.22) 0%, transparent 18%),
+    var(--paper);
+  /* Slightly darker to simulate back of page */
+  filter: brightness(0.93);
+}
+
+.turn-front-media {
+  position: absolute;
+  inset: 0;
+  background-color: var(--paper);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.turn-front-media:not(.has-image) {
+  display: none;
+}
+
+/* Crease shadow on the front face */
+.turn-front::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 30px;
+  background: linear-gradient(to right, transparent, rgba(121, 87, 111, 0.10));
+  pointer-events: none;
+}
+
+/* Crease on left edge of back face */
+.turn-back::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 30px;
+  background: linear-gradient(to left, transparent, rgba(121, 87, 111, 0.18));
+  pointer-events: none;
+}
+
+/* Backward flip: origin right, comes from left side */
+.turn-sheet.is-backward {
+  left: 0;
+  border-radius: 8px 2px 2px 8px;
+  transform-origin: right center;
+}
+
+/* Lift shadow that intensifies mid-flip */
+.turn-sheet.is-active .turn-front {
+  box-shadow:
+    -8px 0 32px rgba(121, 87, 111, 0.22),
+    12px 0 28px rgba(181, 134, 150, 0.16);
+}
+
+/* Single-page mode */
+.turn-sheet.is-single {
+  left: 0;
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* Legacy — keep for backward compat */
+.turn-media {
+  display: none;
+}
+
+/* ── Controls ── */
+.controls {
+  display: grid;
+  grid-template-columns: 44px minmax(120px, 220px) 44px;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.icon-button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  color: var(--cream);
+  background: rgba(232, 160, 180, 0.34);
+  box-shadow: 0 10px 24px rgba(181, 134, 150, 0.16);
+  cursor: pointer;
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.icon-button:hover,
+.icon-button:focus-visible {
+  background: rgba(215, 197, 244, 0.48);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.icon-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  transform: none;
+}
+
+.chevron {
+  width: 12px;
+  height: 12px;
+  border-top: 2px solid currentColor;
+  border-right: 2px solid currentColor;
+}
+
+.chevron-left {
+  transform: rotate(-135deg);
+}
+
+.chevron-right {
+  transform: rotate(45deg);
+}
+
+.progress {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.36);
+}
+
+.progress span {
+  display: block;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--progress);
+  transition: width 240ms ease;
+}
+
+/* ══════════════════════════════════════════
+   MOBILE — portrait
+   ══════════════════════════════════════════ */
+@media (max-width: 760px) {
+  .love-scene {
+    align-items: start;
+    padding: 16px 14px 28px;
+  }
+
+  .book {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .book-spine,
+  .left-page,
+  .right-cover {
+    display: none;
+  }
+
+  .page,
+  .book-cover {
+    min-height: min(118vw, 560px);
+  }
+
+  .right-page {
+    grid-column: 1;
+    border-radius: 8px;
+  }
+
+  .left-cover {
+    left: 50%;
+    width: min(360px, calc(100% - 14px));
+    transform: translateX(-50%) translateZ(-28px);
+  }
+
+  .cover-frame {
+    inset: 30px;
+  }
+
+  .turn-sheet {
+    left: 0;
+    width: 100%;
+    border-radius: 8px;
+    transform-origin: center center; /* center split on mobile */
+  }
+
+  .turn-sheet.is-backward {
+    transform-origin: center center;
+  }
+
+  .controls {
+    margin-top: 22px;
+  }
+}
+
+/* ══════════════════════════════════════════
+   MOBILE — landscape
+   ══════════════════════════════════════════ */
+@media (max-height: 520px) and (orientation: landscape) {
+  .love-scene {
+    align-items: center;
+    padding: 10px 12px 10px;
+    min-height: 100vh;
+  }
+
+  .book-stage {
+    width: 100%;
+  }
+
+  .book-wrap {
+    width: 100%;
+    max-width: none;
+  }
+
+  .book {
+    /* Show both pages in landscape */
+    grid-template-columns: 1fr 18px 1fr;
+    min-height: min(72vh, 340px);
+  }
+
+  .page,
+  .book-spine {
+    min-height: min(72vh, 340px);
+  }
+
+  .left-page { display: block; }
+  .book-spine { display: block; }
+  .right-cover { display: block; }
+
+  .right-page {
+    grid-column: 3;
+    border-radius: 2px 8px 8px 2px;
+  }
+
+  .book-cover {
+    top: -10px;
+    height: calc(100% + 20px);
+  }
+
+  .left-cover {
+    left: -14px;
+    width: calc(50% - 9px);
+    transform: translateZ(-22px) rotateY(2deg);
+  }
+
+  .right-cover {
+    right: -14px;
+  }
+
+  .book-shadow {
+    bottom: -16px;
+    height: 34px;
+  }
+
+  .turn-sheet {
+    left: calc(50% + 9px);
+    width: calc(50% - 9px);
+  }
+
+  .turn-sheet.is-backward {
+    left: 0;
+    transform-origin: right center;
+  }
+
+  .turn-sheet.is-single {
+    left: 0;
+    width: 100%;
+  }
+
+  .controls {
+    margin-top: 14px;
+  }
+
+  .icon-button {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 420px) {
+  .controls {
+    grid-template-columns: 42px minmax(96px, 1fr) 42px;
+    gap: 12px;
+  }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .turn-sheet.is-settling {
+    transition-duration: 1ms !important;
+  }
+}

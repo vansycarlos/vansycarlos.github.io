@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Libro</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="welcome-modal" id="welcomeModal" role="dialog" aria-modal="true" aria-labelledby="welcomeMessage">
+      <div class="welcome-card">
+        <p id="welcomeMessage">
+          Hola mi amorr, te hice este pequeño librito digital para ti mi niña,
+          espero te guste y lo disfrutes
+        </p>
+        <button class="welcome-button" id="closeWelcome" type="button">Abrir</button>
+      </div>
+    </div>
+
+    <main class="love-scene">
+      <section class="book-stage" aria-label="Libro interactivo">
+        <div class="book-wrap">
+          <div class="book-shadow"></div>
+          <article class="book" id="book" aria-live="polite">
+
+            <!-- Left hardcover -->
+            <div class="book-cover left-cover">
+              <div class="cover-frame">
+                <span class="cover-mark" aria-hidden="true"></span>
+              </div>
+            </div>
+
+            <!-- Spine -->
+            <div class="book-spine" aria-hidden="true"></div>
+
+            <!-- Left page -->
+            <div class="page left-page">
+              <div class="page-media" id="leftMedia" aria-hidden="true"></div>
+            </div>
+
+            <!-- Right page (visible) -->
+            <div class="page right-page" id="turningPage">
+              <div class="page-media" id="rightMedia" aria-hidden="true"></div>
+            </div>
+
+            <!--
+              Turn sheet: two-face 3D card
+              .turn-front  = the page leaving (flips away)
+              .turn-back   = the underside / back face (seen mid-flip)
+            -->
+            <div class="turn-sheet" aria-hidden="true">
+              <!-- Front face: image of the page being turned -->
+              <div class="turn-front">
+                <div class="turn-front-media"></div>
+              </div>
+              <!-- Back face: blank back of the page -->
+              <div class="turn-back"></div>
+            </div>
+
+            <!-- Right hardcover -->
+            <div class="book-cover right-cover" aria-hidden="true"></div>
+          </article>
+        </div>
+
+        <div class="controls" aria-label="Controles del libro">
+          <button class="icon-button" id="prevPage" type="button" aria-label="Pagina anterior">
+            <span class="chevron chevron-left"></span>
+          </button>
+          <div class="progress" aria-hidden="true">
+            <span id="progressBar"></span>
+          </div>
+          <button class="icon-button" id="nextPage" type="button" aria-label="Pagina siguiente">
+            <span class="chevron chevron-right"></span>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
