@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>100 Razones para Amarte</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; overflow: hidden; }
+
+  #wrap { width: 100%; height: 100vh; height: 100dvh; overflow: hidden; position: relative; }
+
+  #slider {
+    width: 100%;
+    height: 200vh;
+    height: 200dvh;
+    transition: transform 0.9s cubic-bezier(0.77, 0, 0.18, 1);
+    will-change: transform;
+  }
+  #slider.down { transform: translateY(-50%); }
+
+  /* ── PÁGINA 1 ── */
+  #page-title {
+    width: 100%; height: 100vh; height: 100dvh;
+    background: radial-gradient(ellipse at 50% 30%, #1a0a12 0%, #0d050a 50%, #050206 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6vh 1.2rem 7vh;
+    position: relative;
+    overflow: hidden;
+  }
+  #page-title::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 280px;
+    background: radial-gradient(ellipse, rgba(255,182,193,0.06) 0%, transparent 70%);
+    top: 10%; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+  #page-title::after {
+    content: '';
+    position: absolute;
+    width: 700px; height: 350px;
+    background: radial-gradient(ellipse, rgba(255,192,203,0.04) 0%, transparent 65%);
+    bottom: 5%; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .bwrap { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .bst { position: absolute; border-radius: 50%; }
+  @keyframes tw {
+    0%,100% { opacity: var(--op); }
+    50% { opacity: 0.03; }
+  }
+
+  /* Título */
+  .hero-title { position: relative; z-index: 2; text-align: center; }
+  .hero-title h1 {
+    font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+    font-size: clamp(28px, 8vw, 50px);
+    font-weight: 300;
+    color: #ffe8f0;
+    letter-spacing: 3px;
+    line-height: 1.25;
+    text-shadow: 0 0 30px rgba(255,192,203,0.35), 0 0 70px rgba(255,150,180,0.15);
+  }
+  .hero-sub {
+    font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+    font-size: clamp(11px, 3vw, 14px);
+    color: rgba(255,192,203,0.55);
+    letter-spacing: 2px;
+    margin-top: 0.5rem;
+    font-style: italic;
+  }
+  .hero-divider {
+    width: 60px; height: 1px;
+    background: linear-gradient(to right, transparent, rgba(255,182,193,0.4), transparent);
+    margin: 0.6rem auto 0;
+  }
+
+  /* Ilustración: ocupa todo el espacio central */
+  .illustration {
+    position: relative; z-index: 2;
+    width: clamp(200px, 72vw, 400px);
+    max-height: 54vh;
+    object-fit: contain;
+    flex: 1;
+    min-height: 0;
+    animation: float 4.5s ease-in-out infinite;
+    filter: drop-shadow(0 10px 32px rgba(255,192,203,0.2));
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%      { transform: translateY(-14px); }
+  }
+
+  /* Botón */
+  .btn-go {
+    position: relative; z-index: 2;
+    background: none;
+    border: 1px solid rgba(255,192,203,0.35);
+    border-radius: 40px;
+    padding: 0.85rem 2.4rem;
+    color: rgba(255,220,230,0.8);
+    font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+    font-size: clamp(11px, 3.5vw, 15px);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    min-height: 48px;
+    touch-action: manipulation;
+    white-space: nowrap;
+  }
+  .btn-go:hover, .btn-go:active {
+    background: rgba(255,192,203,0.09);
+    border-color: rgba(255,192,203,0.65);
+    color: #fff;
+    box-shadow: 0 0 18px rgba(255,192,203,0.15);
+  }
+
+  /* ── PÁGINA 2 ── */
+  #page-stars {
+    width: 100%; height: 100vh; height: 100dvh;
+    background: radial-gradient(ellipse at 50% 10%, #130608 0%, #080308 50%, #040106 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0.5rem 1.2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  #page-stars::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 200px;
+    background: radial-gradient(ellipse, rgba(255,182,193,0.04) 0%, transparent 70%);
+    top: 25%; left: 50%; transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .stars-title {
+    text-align: center;
+    font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+    font-size: clamp(11px, 3.5vw, 16px);
+    font-weight: 300;
+    color: rgba(255,192,203,0.5);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 0.8rem;
+    position: relative; z-index: 2;
+  }
+
+  .stars-field {
+    position: relative;
+    width: 100%; flex: 1;
+    z-index: 2;
+    min-height: 0;
+  }
+
+  /* Estrellas: área táctil grande en móvil */
+  .s {
+    position: absolute;
+    cursor: pointer;
+    background: none; border: none;
+    padding: 8px;
+    transform: translate(-50%, -50%);
+    animation: sway var(--gd) ease-in-out infinite var(--gdl);
+    outline: none;
+    touch-action: manipulation;
+  }
+  .s svg {
+    display: block;
+    width: var(--sz); height: var(--sz);
+    transition: transform 0.2s, filter 0.2s;
+    filter: drop-shadow(0 0 3px rgba(255,215,60,0.7));
+  }
+  .s:hover:not(.visited) svg, .s:active:not(.visited) svg {
+    transform: scale(1.6);
+    filter: drop-shadow(0 0 8px rgba(255,220,60,1)) drop-shadow(0 0 14px rgba(255,190,50,0.6));
+  }
+  .s.visited svg {
+    filter: drop-shadow(0 0 1px rgba(180,180,180,0.3));
+  }
+  .s.visited polygon { fill: #4a4050 !important; }
+  .s.visited:hover svg, .s.visited:active svg {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 4px rgba(180,160,180,0.5));
+  }
+
+  @keyframes sway {
+    0%,100% { transform: translate(-50%,-50%) rotate(-3deg); }
+    50%      { transform: translate(-50%,-50%) rotate(3deg); }
+  }
+
+  .back-btn {
+    position: relative; z-index: 2;
+    margin-top: 0.6rem;
+    background: none; border: none;
+    color: rgba(255,192,203,0.25);
+    font-family: Georgia, serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.5rem 1rem;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  .back-btn:hover, .back-btn:active { color: rgba(255,192,203,0.6); }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(4,0,8,0.72);
+    z-index: 300;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(12px);
+    padding: 1.5rem;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal-card {
+    max-width: 320px; width: 100%;
+    text-align: center;
+    animation: popIn 0.22s ease;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.85); opacity: 0; }
+    to   { transform: scale(1);    opacity: 1; }
+  }
+  .modal-num {
+    font-family: Georgia, serif;
+    font-size: 10px; letter-spacing: 5px;
+    color: rgba(255,192,203,0.45);
+    text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .modal-star-icon {
+    font-size: 28px; display: block;
+    margin-bottom: 0.7rem;
+    text-shadow: 0 0 12px rgba(255,215,60,0.8);
+  }
+  .modal-text {
+    font-family: 'Palatino Linotype', Palatino, Georgia, serif;
+    font-size: clamp(16px, 4.5vw, 19px);
+    color: #ffe8f4; line-height: 1.75;
+    text-shadow: 0 1px 10px rgba(255,192,203,0.2);
+  }
+  .modal-x {
+    display: block; margin: 1.4rem auto 0;
+    background: none; border: none;
+    color: rgba(255,192,203,0.3);
+    font-size: 20px; cursor: pointer;
+    transition: color 0.2s;
+    padding: 0.5rem 1.5rem;
+    min-height: 44px;
+    touch-action: manipulation;
+  }
+  .modal-x:hover, .modal-x:active { color: rgba(255,192,203,0.8); }
+
+  /* Separador visual entre páginas: evita corte */
+  @media (max-height: 600px) {
+    #page-title { padding: 4vh 1rem 5vh; }
+    .illustration { max-height: 46vh; }
+  }
+</style>
+</head>
+<body>
+
+<div id="wrap">
+  <div id="slider">
+
+    <div id="page-title">
+      <div class="bwrap" id="bg1"></div>
+
+      <div class="hero-title">
+        <h1>50 Razones<br>para Amarte</h1>
+        <div class="hero-divider"></div>
+        <p class="hero-sub">Me haces el niño más feliz del mundo a tu lado</p>
+      </div>
+
+      <!--
+        IMAGEN FLOTANTE:
+        Pon tu imagen en la misma carpeta que este HTML
+        y nómbrala "ilustracion.png"
+        Recomendado: PNG con fondo transparente
+      -->
+      <img class="illustration" src="ilustracion.png" alt="ilustración" onerror="this.style.display='none'">
+
+      <button class="btn-go" onclick="goDown()">✦ descubrir las razones</button>
+    </div>
+
+    <div id="page-stars">
+      <div class="bwrap" id="bg2"></div>
+      <p class="stars-title">✦ toca una estrella ✦</p>
+      <div class="stars-field" id="starsField"></div>
+      <button class="back-btn" onclick="goUp()">↑ volver</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="tryClose(event)">
+  <div class="modal-card">
+    <p class="modal-num" id="mNum"></p>
+    <span class="modal-star-icon">★</span>
+    <p class="modal-text" id="mText"></p>
+    <button class="modal-x" onclick="closeModal()">✕</button>
+  </div>
+</div>
+
+<script>
+const reasons = [
+  "Siempre pienso en ti.",
+  "Me encanta hablar contigo.",
+  "Me haces sentir especial.",
+  "Mi corazón es todo tuyo.",
+  "Me haces sentir amado.",
+  "Tu forma de ser es única.",
+  "Lo especial que eres.",
+  "Tienes un corazón muy bonito.",
+  "Porque me haces querer ser una mejor persona.",
+  "Porque contigo puedo ser yo mismo.",
+  "Por lo hermosa que eres desde mis ojos.",
+  "Porque me das paz.",
+  "Me encanta escuchar tu voz.",
+  "Porque cada mensaje tuyo mejora mi día.",
+  "Porque eres mi lugar seguro.",
+  "Porque admiro la persona que eres.",
+  "Porque me haces sentir importante.",
+  "Porque eres muy cariñosa.",
+  "Porque confío en ti.",
+  "Porque me haces sentir en casa, estés donde estés.",
+  "Porque me gusta imaginar un futuro contigo.",
+  "Porque me aceptas tal como soy a pesar de mis errores.",
+  "Porque me encanta tu forma de demostrar cariño.",
+  "Porque eres mi persona favorita.",
+  "Porque haces mi vida más bonita.",
+  "Porque eres la última persona en la que pienso antes de dormir.",
+  "Porque me haces sentir muy afortunado de tener una niña tan increíble.",
+  "Haces que quiera compartir todo contigo.",
+  "Porque eres mi felicidad entera.",
+  "Porque contigo todo parece posible.",
+  "Porque eres muy amable.",
+  "Porque me haces sentir escuchado.",
+  "Porque me encanta cuando me llamas con tus apodos.",
+  "Porque me encanta escucharte reír.",
+  "Porque me haces sentir completo.",
+  "Porque eres muy dulce.",
+  "Porque eres muy tierna.",
+  "Porque contigo soy más feliz.",
+  "Porque me encanta cuando me extrañas.",
+  "Porque me gusta aprender cosas de ti.",
+  "Porque eres muy auténtica.",
+  "Porque me encanta verte feliz.",
+  "Porque me haces sentir valorado.",
+  "Porque tu forma de querer es muy bonita.",
+  "Porque me haces sentir orgulloso de estar contigo.",
+  "Porque siempre sacas lo mejor de mí.",
+  "Porque simplemente no imagino mi vida sin ti.",
+  "Porque me haces sentir que puedo con todo.",
+  "Y si algún día estas 50 razones dejan de ser suficientes, prometo encontrar miles más, porque amarte es algo que nunca deja de darme motivos."
+];
+
+const visited = new Set();
+
+function makeBgStars(id, c1, c2) {
+  const el = document.getElementById(id);
+  const cols = [c1, c2, '#ffffff', '#e8d0d8'];
+  for (let i = 0; i < 110; i++) {
+    const s = document.createElement('span');
+    const sz = 0.8 + Math.random() * 1.8;
+    const col = cols[Math.floor(Math.random() * cols.length)];
+    const d = (3 + Math.random() * 6) + 's';
+    const dl = (Math.random() * 7) + 's';
+    const op = 0.15 + Math.random() * 0.5;
+    s.style.cssText = `
+      position:absolute;border-radius:50%;
+      left:${Math.random()*100}%;top:${Math.random()*100}%;
+      width:${sz}px;height:${sz}px;background:${col};
+      --d:${d};--dl:${dl};--op:${op};
+      animation:tw ${d} ease-in-out infinite ${dl};
+    `;
+    el.appendChild(s);
+  }
+}
+
+function buildStars() {
+  const field = document.getElementById('starsField');
+  field.innerHTML = '';
+  const W = field.offsetWidth  || window.innerWidth;
+  const H = field.offsetHeight || (window.innerHeight * 0.8);
+
+  // En móvil las estrellas son un poco más grandes y con más separación
+  const isMobile = window.innerWidth < 500;
+  const minDist = isMobile ? 28 : 34;
+  const baseSz  = isMobile ? 14 : 12;
+  const varSz   = isMobile ? 8  : 10;
+
+  const pos = [];
+  for (let i = 0; i < 49; i++) {
+    let x, y, t = 0;
+    do {
+      x = 16 + Math.random() * (W - 32);
+      y = 16 + Math.random() * (H - 32);
+      t++;
+    } while (t < 80 && pos.some(p => Math.hypot(p.x - x, p.y - y) < minDist));
+    pos.push({ x, y });
+
+    const btn = document.createElement('button');
+    btn.className = 's' + (visited.has(i) ? ' visited' : '');
+    btn.style.left = x + 'px';
+    btn.style.top  = y + 'px';
+    const sz = (baseSz + Math.random() * varSz) + 'px';
+    btn.style.setProperty('--sz', sz);
+    btn.style.setProperty('--gd',  (5 + Math.random() * 4) + 's');
+    btn.style.setProperty('--gdl', (Math.random() * 6) + 's');
+    btn.setAttribute('aria-label', 'Razón ' + (i + 1));
+    btn.dataset.idx = i;
+    const fill = visited.has(i) ? '#4a4050' : '#FFD93D';
+    btn.innerHTML = `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26" fill="${fill}"/></svg>`;
+    if (i === 48) { btn.style.setProperty('--sz', (isMobile ? 26 : 22) + 'px'); btn.style.filter = 'drop-shadow(0 0 6px rgba(255,215,60,0.9))'; }
+    btn.addEventListener('click', () => openModal(i, btn));
+    field.appendChild(btn);
+  }
+}
+
+function goDown() {
+  document.getElementById('slider').classList.add('down');
+  setTimeout(buildStars, 80);
+}
+function goUp() {
+  document.getElementById('slider').classList.remove('down');
+}
+
+function openModal(i, btn) {
+  visited.add(i);
+  if (btn) {
+    btn.classList.add('visited');
+    const poly = btn.querySelector('polygon');
+    if (poly) poly.setAttribute('fill', '#4a4050');
+  }
+  document.getElementById('mNum').textContent  = 'Razón ' + (i + 1) + ' de 50';
+  document.getElementById('mText').textContent = reasons[i];
+  document.getElementById('modal').classList.add('open');
+}
+function tryClose(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+
+// Bloquear scroll nativo en ambos sentidos
+const wrap = document.getElementById('wrap');
+wrap.addEventListener('wheel',     e => e.preventDefault(), { passive: false });
+wrap.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+// Reconstruir estrellas si cambia la orientación (móvil)
+window.addEventListener('resize', () => {
+  if (document.getElementById('slider').classList.contains('down')) buildStars();
+});
+
+makeBgStars('bg1', '#ffb8c8', '#e8c0cc');
+makeBgStars('bg2', '#e8b0c0', '#c8a0b0');
+</script>
+</body>
+</html>
