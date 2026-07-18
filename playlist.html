@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>My girll</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --navy-top:#25335c;
+    --navy-mid:#1a2547;
+    --navy-deep:#0e1730;
+    --yellow:#f2e3a0;
+    --yellow-soft:rgba(242,227,160,.85);
+    --white:#f6f3ec;
+    --muted:#6b6558;
+    --mist:rgba(246,243,236,.55);
+    --line:rgba(246,243,236,.12);
+    --glow:rgba(200,215,255,.35);
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--navy-deep);
+    color:var(--white);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+
+  .reel{
+    height:100dvh; width:100%;
+    overflow-y:scroll; overflow-x:hidden;
+    scroll-snap-type:y mandatory;
+    scroll-behavior:smooth;
+    -webkit-overflow-scrolling:touch;
+  }
+  .reel::-webkit-scrollbar{display:none;}
+  .reel{scrollbar-width:none;}
+
+  section{
+    height:100dvh; width:100%;
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  /* ---------- side nav ---------- */
+  .nav-reel{
+    position:fixed; right:14px; top:50%;
+    transform:translateY(-50%);
+    z-index:50;
+    display:flex; flex-direction:column; align-items:center; gap:12px;
+  }
+  .nav-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:rgba(246,243,236,.25);
+    border:none; cursor:pointer;
+    transition:all .35s ease; padding:0; position:relative;
+  }
+  .nav-dot::after{
+    content:attr(data-label);
+    position:absolute; right:16px; top:50%; transform:translateY(-50%);
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.06em;
+    color:var(--mist); white-space:nowrap; opacity:0; transition:opacity .25s ease; pointer-events:none;
+  }
+  .nav-dot:hover::after{opacity:1;}
+  .nav-dot.active{
+    background:var(--yellow); width:9px; height:9px;
+    box-shadow:0 0 10px rgba(242,227,160,.6);
+  }
+  @media (max-width:640px){ .nav-reel{display:none;} }
+
+  /* ================= HERO ================= */
+  .hero{
+    background:radial-gradient(120% 90% at 50% 15%, var(--navy-top) 0%, var(--navy-deep) 65%);
+    text-align:center; align-items:center; padding:8vh 8vw;
+  }
+  .hero .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.28em;
+    text-transform:uppercase; color:var(--yellow-soft); margin-bottom:24px;
+  }
+  .hero-photo-wrap{
+    position:relative; width:min(64vw, 300px); aspect-ratio:1/1;
+    margin:0 auto 30px; display:flex; align-items:center; justify-content:center;
+  }
+  .hero-glow{
+    position:absolute; inset:-20%;
+    background:radial-gradient(circle, var(--glow) 0%, rgba(200,215,255,.12) 45%, transparent 72%);
+    filter:blur(10px);
+    animation:pulse 5s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{transform:scale(1); opacity:.85;}50%{transform:scale(1.06); opacity:1;}}
+  .hero-photo{
+    position:relative; width:100%; height:100%; object-fit:contain;
+    filter:drop-shadow(0 18px 40px rgba(0,0,0,.5));
+  }
+  .hero-photo.placeholder{
+    border:1.5px dashed rgba(246,243,236,.28); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--mist);
+    text-align:center; padding:20px; line-height:1.5;
+  }
+  .hero h1{
+    font-family:'Fraunces',serif; font-weight:500; font-size:clamp(2.1rem, 8vw, 3.4rem);
+    line-height:1.1; color:var(--yellow); margin-bottom:16px;
+  }
+  .hero p{ font-size:14.5px; color:var(--mist); max-width:34ch; margin:0 auto; line-height:1.6; }
+  .hero .counter{ margin-top:36px; font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.15em; color:rgba(246,243,236,.35); }
+
+  /* ================= SONG SECTIONS (centrado, estilo referencia) ================= */
+  .track{
+    background:radial-gradient(140% 100% at 50% 0%, var(--navy-top) 0%, var(--navy-mid) 45%, var(--navy-deep) 100%);
+    padding:6vh 8vw 4vh;
+    align-items:center; justify-content:flex-start;
+  }
+  .track-scroll{
+    width:100%; max-width:420px;
+    height:100%;
+    overflow-y:auto; -webkit-overflow-scrolling:touch;
+    display:flex; flex-direction:column; align-items:center;
+    gap:22px; padding:4px 4px 24px;
+  }
+  .track-scroll::-webkit-scrollbar{width:3px;}
+  .track-scroll::-webkit-scrollbar-thumb{background:rgba(246,243,236,.15); border-radius:4px;}
+
+  .track-topline{
+    display:flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono',monospace; font-size:10px; letter-spacing:.18em;
+    text-transform:uppercase; color:rgba(246,243,236,.4);
+  }
+  .track-topline .dot{width:3px;height:3px;border-radius:50%;background:rgba(246,243,236,.4);}
+
+  .cover-card-wrap{ position:relative; width:min(62vw, 250px); aspect-ratio:1/1; margin-top:4px; }
+  .cover-glow{
+    position:absolute; inset:-16%;
+    background:radial-gradient(circle, var(--glow) 0%, rgba(200,215,255,.1) 50%, transparent 75%);
+    filter:blur(8px);
+  }
+  .cover-card{
+    position:relative; width:100%; height:100%;
+    border-radius:10px; overflow:hidden;
+    background-size:cover; background-position:center;
+    border:1px solid rgba(246,243,236,.18);
+    box-shadow:0 20px 45px rgba(0,0,0,.5);
+  }
+
+  .track-title-block{ text-align:center; }
+  .track-title-block h2{
+    font-family:'Fraunces',serif; font-weight:500; color:var(--yellow);
+    font-size:clamp(1.5rem, 6.5vw, 2.1rem); line-height:1.15;
+  }
+  .track-title-block .artist{
+    margin-top:6px; font-size:14px; color:var(--muted); letter-spacing:.02em;
+  }
+
+  .lyrics-block{ text-align:center; max-width:34ch; }
+  .lyrics-block .lyr-es{
+    font-family:'Fraunces',serif; font-weight:400; font-size:16.5px; line-height:1.6;
+    color:var(--yellow-soft); white-space:pre-line;
+  }
+  .lyrics-block .lyr-tr{
+    margin-top:14px; font-size:12.5px; line-height:1.6; color:var(--mist);
+    white-space:pre-line; font-style:italic;
+  }
+  .lyrics-block .lyr-tr::before{
+    content:"traducción"; display:block; font-family:'JetBrains Mono',monospace;
+    font-style:normal; font-size:9px; letter-spacing:.14em; text-transform:uppercase;
+    color:rgba(246,243,236,.35); margin-bottom:6px;
+  }
+
+  .dedicatoria-block{ text-align:center; max-width:32ch; padding-top:4px; }
+  .dedicatoria-block .lbl{
+    display:block; font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.16em;
+    text-transform:uppercase; color:rgba(246,243,236,.35); margin-bottom:12px;
+  }
+  .dedicatoria-block p{
+    font-family:'Inter',sans-serif; font-weight:300; font-size:clamp(1.15rem, 5vw, 1.5rem);
+    line-height:1.5; color:var(--white);
+  }
+
+  /* ================= FINAL / PLAYLIST ================= */
+  .finale{
+    background:radial-gradient(120% 100% at 50% 100%, var(--navy-top) 0%, var(--navy-deep) 60%);
+    text-align:center; align-items:center; padding:6vh 8vw; gap:22px;
+  }
+  .finale .eyebrow{
+    font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:.28em;
+    text-transform:uppercase; color:var(--yellow-soft);
+  }
+  .finale h2{
+    font-family:'Fraunces',serif; font-weight:500; color:var(--yellow);
+    font-size:clamp(2rem, 8vw, 3.1rem); line-height:1.1;
+  }
+  .finale p.sub{ font-size:14px; color:var(--mist); max-width:34ch; line-height:1.6; }
+  .finale-playlist{
+    width:100%; max-width:400px; border-radius:14px; overflow:hidden;
+    border:1px solid var(--line); box-shadow:0 20px 50px rgba(0,0,0,.5);
+  }
+  .finale-playlist iframe{ display:block; width:100%; height:352px; border:none; }
+  .finale-cta{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--yellow); color:var(--navy-deep);
+    font-weight:600; font-size:13.5px; padding:12px 26px; border-radius:30px;
+    text-decoration:none; letter-spacing:.02em; transition:transform .2s ease;
+  }
+  .finale-cta:active{ transform:scale(.96); }
+
+  @media (min-width:641px){
+    .track-scroll{ gap:26px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="reel" id="reel">
+
+  <!-- 1. PORTADA -->
+  <section class="hero">
+    <div class="hero-photo-wrap">
+      <div class="hero-glow"></div>
+      <img class="hero-photo" src="Musical.png" alt="Nosotros">
+    </div>
+    <h1>Playlist de My Girll</h1>
+  </section>
+
+  <!-- 2-8. CANCIONES -->
+  <div id="tracks"></div>
+
+  <!-- 9. FINAL / PLAYLIST -->
+  <section class="finale">
+    <div class="eyebrow">lado B, completo</div>
+    <h2>Escúchalo<br>entero</h2>
+    <p class="sub">Todas las canciones, en orden, para cuando quieras volver a sentirlo todo de nuevo.</p>
+    <div class="finale-playlist">
+      <iframe src="https://open.spotify.com/embed/playlist/3g29pXNcjytDwomy62LVAR?utm_source=generator&theme=0"
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"></iframe>
+    </div>
+    <a class="finale-cta" href="https://open.spotify.com/playlist/3g29pXNcjytDwomy62LVAR" target="_blank" rel="noopener">
+      Abrir en Spotify ↗
+    </a>
+  </section>
+
+</div>
+
+<div class="nav-reel" id="navReel"></div>
+
+<script>
+/* ============================================================
+   EDITA AQUÍ: tus 7 canciones. Cambia todo lo que dice [texto].
+   coverArt: URL de la portada del álbum
+   spotifyTrackId: el ID que va después de /track/ en el link de Spotify
+   ============================================================ */
+const SONGS = [
+  {
+    title: "Hazel Eyes",
+    artist: "BoyWithUke",
+    coverArt: "1.png",
+    lyricEs: "I see your lovely eyes\nThey're hazel-colored, cloudy like the sky\nMy, oh, my, I think I might die",
+    lyricTr: "Veo tus hermosos ojos\nSon color avellana, nublados como el cielo\nAy, ay, creo que podría morir",
+    dedicatoria: "Me recuerda a ti porque habla sobre lo hermoso que son tus ojos, cómo me vuelven loco y cómo los amo."
+  },
+  {
+    title: "Tired of Wanting You",
+    artist: "BoyWithUke",
+    coverArt: "2.png",
+    lyricEs: "I'm not sad, I'm just tired of wanting you\nI want to say I think you're cute",
+    lyricTr: "No estoy triste, solo estoy cansado de quererte\nQuiero decirte que me pareces linda",
+    dedicatoria: "Me recuerda a ti porque hay demasiados planes y cosas que quiero hacer contigo, pero aún no somos novios :("
+  },
+  {
+    title: "Gimme Love",
+    artist: "Joji",
+    coverArt: "3.png",
+    lyricEs: "Gimme-gimme love, gimme-gimme love\nGimme-gimme love, gimme-gimme love",
+    lyricTr: "Dame-dame amor, dame-dame amor\nDame-dame amor, dame-dame amor",
+    dedicatoria: "Me recuerda a ti porque siempre amo que me des amor, amo cómo eres tan cariñosa y amorosa conmigo, y amo todo de ti mi amor."
+  },
+  {
+    title: "Flaws and Sins",
+    artist: "Juice WRLD",
+    coverArt: "4.png",
+    lyricEs: "I fell in love with all your flaws and sins\nYour scars are really gorgeous\nI see light in all the darkness",
+    lyricTr: "Me enamoré de todos tus defectos y pecados\nTus cicatrices son realmente hermosas\nVeo luz en toda la oscuridad",
+    dedicatoria: "Juice WRLD es mi artista favorito, y dedicarte esta canción significa mucho para mí. Me recuerda a ti porque me enamoré de absolutamente todo de ti, TODO, algo de lo que habla esta canción en algunas partes."
+  },
+  {
+    title: "Tear in My Heart",
+    artist: "Twenty One Pilots",
+    coverArt: "5.png",
+    lyricEs: "She's the tear in my heart\nI'm alive\nShe's the tear in my heart\nI'm on fire\nShe's the tear in my heart\nTake me higher\nThan I've ever been",
+    lyricTr: "Ella es la lágrima en mi corazón\nEstoy vivo\nElla es la lágrima en mi corazón\nEstoy en llamas\nElla es la lágrima en mi corazón\nLlévame más alto\nDe lo que jamás he estado",
+    dedicatoria: "Twenty One Pilots es uno de los artistas que escucho desde chico, y Tear In My Heart es una canción muy bonita de amor, la cual amo con todo mi corazón, y me gustaría dedicártela."
+  },
+  {
+    title: "Mi Bello Ángel",
+    artist: "Natanael Cano",
+    coverArt: "6.png",
+    lyricEs: "Solo tú eres la persona, la que me ilusiona\nLa que me emociona, por ti pierdo el rumbo\nY en cada segundo me voy de este mundo con sentirte a ti",
+    lyricTr: "",
+    dedicatoria: "Natanael Cano también es parte de mis gustos de música, y aunque casi no tenga mucho que ver aquí, es una canción muy bonita que me recuerda mucho a ti mi amor, y realmente me gusta mucho cómo lo haces tú."
+  }
+];
+
+const tracksContainer = document.getElementById('tracks');
+
+SONGS.forEach((song, i) => {
+  const n = String(i + 2).padStart(2,'0');
+  const trackNum = String(i + 1).padStart(2,'0');
+  const side = i < 4 ? 'Lado A' : 'Lado B';
+
+  const section = document.createElement('section');
+  section.className = 'track';
+  section.id = 'sec-' + n;
+
+  section.innerHTML = `
+    <div class="track-scroll">
+      <div class="track-topline">
+        <span>Track ${trackNum} / 06</span><span class="dot"></span><span>${side}</span>
+      </div>
+      <div class="cover-card-wrap">
+        <div class="cover-glow"></div>
+        <div class="cover-card" style="background-image:url('${song.coverArt}')"></div>
+      </div>
+      <div class="track-title-block">
+        <h2>${song.title}</h2>
+        <div class="artist">${song.artist}</div>
+      </div>
+      <div class="lyrics-block">
+        <div class="lyr-es">${song.lyricEs}</div>
+        ${song.lyricTr ? `<div class="lyr-tr">${song.lyricTr}</div>` : ``}
+      </div>
+      <div class="dedicatoria-block">
+        <span class="lbl">para ti</span>
+        <p>${song.dedicatoria}</p>
+      </div>
+    </div>
+  `;
+  tracksContainer.appendChild(section);
+});
+
+const reel = document.getElementById('reel');
+const allSections = Array.from(document.querySelectorAll('section'));
+const navReel = document.getElementById('navReel');
+
+allSections.forEach((sec, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'nav-dot';
+  dot.dataset.label = i === 0 ? 'portada' : (i === allSections.length - 1 ? 'playlist' : 'track ' + String(i).padStart(2,'0'));
+  dot.addEventListener('click', () => sec.scrollIntoView({behavior:'smooth'}));
+  navReel.appendChild(dot);
+});
+
+const dots = Array.from(navReel.children);
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const idx = allSections.indexOf(entry.target);
+      dots.forEach(d => d.classList.remove('active'));
+      dots[idx].classList.add('active');
+    }
+  });
+}, { root: reel, threshold: 0.6 });
+
+allSections.forEach(sec => observer.observe(sec));
+</script>
+
+</body>
+</html>
