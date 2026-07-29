@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cartas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #FBEECB;
+    --bg-deep: #F5E1A0;
+    --paper: #FFFCF5;
+    --envelope: #F5EFDD;
+    --envelope-shade: #EAE1C6;
+    --envelope-line: #D9CEA9;
+    --envelope-shadow: #C9BB8E;
+    --ink: #5A4230;
+    --ink-soft: #8A6F52;
+    --rose: #C97B84;
+    --rose-dark: #A2545F;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{ margin:0; height:100%; }
+
+  body{
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--ink);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+    position:relative;
+    background:
+      radial-gradient(circle at 18% 22%, rgba(255,255,255,0.3), transparent 42%),
+      radial-gradient(circle at 82% 78%, rgba(255,255,255,0.22), transparent 40%),
+      linear-gradient(180deg, var(--bg) 0%, var(--bg-deep) 100%);
+  }
+
+  /* ---------- ambient floating hearts ---------- */
+  .ambient{ position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .ambient span{
+    position: absolute; bottom: -8%;
+    color: var(--rose); opacity: 0.28;
+    animation: floatUp linear infinite;
+  }
+  .ambient span:nth-child(1){ left: 6%;  font-size: 16px; animation-duration: 19s; animation-delay: 0s; }
+  .ambient span:nth-child(2){ left: 24%; font-size: 12px; animation-duration: 23s; animation-delay: 3s; }
+  .ambient span:nth-child(3){ left: 50%; font-size: 18px; animation-duration: 21s; animation-delay: 6s; }
+  .ambient span:nth-child(4){ left: 70%; font-size: 13px; animation-duration: 26s; animation-delay: 1s; }
+  .ambient span:nth-child(5){ left: 86%; font-size: 17px; animation-duration: 20s; animation-delay: 8s; }
+  .ambient span:nth-child(6){ left: 93%; font-size: 11px; animation-duration: 24s; animation-delay: 4s; }
+
+  @keyframes floatUp{
+    0%   { transform: translateY(0) rotate(-6deg); opacity: 0; }
+    12%  { opacity: 0.28; }
+    88%  { opacity: 0.2; }
+    100% { transform: translateY(-112vh) rotate(8deg); opacity: 0; }
+  }
+
+  /* ---------- envelopes row ---------- */
+  .desk{
+    position: relative;
+    z-index: 1;
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: clamp(2.5rem, 6vw, 5.5rem);
+    padding: 4vh 6vw;
+  }
+
+  .envelope-wrap{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    perspective: 1600px;
+  }
+  .envelope-wrap:nth-child(2){ margin-top: 1.4rem; }
+  .envelope-wrap:nth-child(3){ margin-top: -0.6rem; }
+
+  .envelope-btn{
+    all: unset;
+    cursor: pointer;
+    position: relative;
+    width: clamp(190px, 22vw, 240px);
+    height: clamp(128px, 15vw, 160px);
+  }
+  .envelope-btn:focus-visible .envelope{
+    outline: 3px solid var(--rose-dark);
+    outline-offset: 4px;
+    border-radius: 6px;
+  }
+
+  .ground-shadow{
+    width: 74%;
+    height: 14px;
+    margin-top: 0.9rem;
+    border-radius: 50%;
+    background: radial-gradient(ellipse at center, rgba(120,90,40,0.24), transparent 70%);
+    transition: transform 0.4s ease, opacity 0.4s ease;
+  }
+  .envelope-wrap.open .ground-shadow{ transform: scaleX(1.12); opacity: 0.55; }
+
+  .envelope{
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: transform 0.4s ease;
+  }
+  .envelope-btn:hover .envelope{ transform: translateY(-3px); }
+
+  .env-body{
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(155deg, #FAF6E9 0%, var(--envelope) 45%, var(--envelope-shade) 100%);
+    border-radius: 3px;
+    box-shadow: 0 14px 24px -12px rgba(120, 94, 50, 0.38);
+    overflow: hidden;
+  }
+  .env-body::before,
+  .env-body::after{
+    content:"";
+    position:absolute;
+    top:0; bottom:0; width:1px;
+    background: var(--envelope-line);
+    opacity: 0.8;
+  }
+
+  .paper{
+    position: absolute;
+    left: 50%;
+    top: 10%;
+    width: 76%;
+    height: 80%;
+    transform: translate(-50%, 12%);
+    background: var(--paper);
+    border-radius: 2px;
+    box-shadow: 0 2px 5px rgba(120,84,30,0.14);
+    z-index: 2;
+    transition: transform 0.85s cubic-bezier(.22,1.1,.4,1) 0.3s, opacity 0.3s ease;
+  }
+
+  .pocket{
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 76%;
+    background: linear-gradient(155deg, #FAF6E9 0%, var(--envelope) 45%, var(--envelope-shade) 100%);
+    clip-path: polygon(0 100%, 0 32%, 50% 76%, 100% 32%, 100% 100%);
+    z-index: 3;
+    box-shadow: inset 0 5px 8px -6px rgba(120,94,50,0.22);
+  }
+  .pocket::before{
+    content:"";
+    position:absolute;
+    left:0; right:0; top:32%;
+    height:1px;
+    background: transparent;
+  }
+
+  .flap{
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 60%;
+    background: linear-gradient(155deg, #FAF6E9 0%, var(--envelope) 55%, var(--envelope-shade) 100%);
+    border-bottom: 1px solid var(--envelope-line);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform 0.55s cubic-bezier(.6,.05,.4,1);
+    z-index: 4;
+  }
+  .flap::after{
+    content:"";
+    position:absolute;
+    left:0; top:0;
+    width:100%; height:100%;
+    background: linear-gradient(115deg, transparent 46%, rgba(160,130,70,0.12) 50%, transparent 54%),
+                linear-gradient(245deg, transparent 46%, rgba(160,130,70,0.12) 50%, transparent 54%);
+  }
+
+  /* ---- OPEN STATE (peek) ---- */
+  .envelope-wrap.open .flap{ transform: rotateX(-165deg); }
+  .envelope-wrap.open .paper{ transform: translate(-50%, -74%); }
+  .envelope-wrap.hidden-paper .paper{ opacity: 0; }
+
+  /* ---------- reader (hoja centrada) ---------- */
+  .scrim{
+    position: fixed;
+    inset: 0;
+    background: rgba(90, 66, 40, 0.32);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+    z-index: 55;
+  }
+  .scrim.show{ opacity: 1; pointer-events: auto; }
+
+  .reader-paper{
+    position: fixed;
+    background: var(--paper);
+    overflow: hidden;
+    z-index: 60;
+    transition:
+      top 0.65s cubic-bezier(.2,1.1,.4,1),
+      left 0.65s cubic-bezier(.2,1.1,.4,1),
+      width 0.65s cubic-bezier(.2,1.1,.4,1),
+      height 0.65s cubic-bezier(.2,1.1,.4,1),
+      border-radius 0.5s ease,
+      box-shadow 0.65s ease;
+  }
+  .reader-paper.expanded{
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .reader-inner{
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    display: flex;
+    justify-content: center;
+    padding:
+      max(2.4rem, env(safe-area-inset-top))
+      max(1.6rem, env(safe-area-inset-right))
+      max(2.6rem, env(safe-area-inset-bottom))
+      max(1.6rem, env(safe-area-inset-left));
+    opacity: 0;
+    transition: opacity 0.5s ease 0.3s;
+  }
+  .reader-paper.expanded .reader-inner{ opacity: 1; }
+
+  .reader-content{
+    width: 100%;
+    max-width: 620px;
+    margin: auto 0;
+  }
+
+  .mini-seal{
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    margin: 0 auto 1.2rem;
+    background: var(--rose);
+  }
+
+  .letter-title{
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 600;
+    text-align: center;
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    margin: 0 0 1.5rem;
+    color: var(--ink);
+  }
+
+  .letter-body{
+    font-size: clamp(1.08rem, 2.2vw, 1.3rem);
+    line-height: 1.8;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+
+  .letter-sign{
+    margin-top: 1.8rem;
+    text-align: right;
+    font-family: 'Caveat', cursive;
+    font-size: 1.7rem;
+    color: var(--rose-dark);
+  }
+
+  .close-btn{
+    all: unset;
+    cursor: pointer;
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color: var(--ink-soft);
+    background: rgba(255,255,255,0.6);
+    font-size: 1.15rem;
+    opacity: 0;
+    z-index: 61;
+    transition: background 0.25s ease, color 0.25s ease, opacity 0.4s ease 0.3s;
+  }
+  .reader-paper.expanded .close-btn{ opacity: 1; }
+  .close-btn:hover{ background: rgba(169,84,90,0.15); color: var(--rose-dark); }
+  .close-btn:focus-visible{ outline: 2px solid var(--rose-dark); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
+
+  @media (max-width: 620px){
+    .desk{ gap: 2.2rem; }
+    .envelope-wrap:nth-child(2), .envelope-wrap:nth-child(3){ margin-top: 0; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="ambient" aria-hidden="true">
+    <span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span><span>♥</span>
+  </div>
+
+  <main class="desk">
+
+    <div class="envelope-wrap" data-letter="1">
+      <button class="envelope-btn" aria-label="Abrir la primera carta">
+        <div class="envelope">
+          <div class="env-body"></div>
+          <div class="paper"></div>
+          <div class="pocket"></div>
+          <div class="flap"></div>
+          
+        </div>
+      </button>
+      <div class="ground-shadow"></div>
+    </div>
+
+    <div class="envelope-wrap" data-letter="2">
+      <button class="envelope-btn" aria-label="Abrir la segunda carta">
+        <div class="envelope">
+          <div class="env-body"></div>
+          <div class="paper"></div>
+          <div class="pocket"></div>
+          <div class="flap"></div>
+          
+        </div>
+      </button>
+      <div class="ground-shadow"></div>
+    </div>
+
+    <div class="envelope-wrap" data-letter="3">
+      <button class="envelope-btn" aria-label="Abrir la tercera carta">
+        <div class="envelope">
+          <div class="env-body"></div>
+          <div class="paper"></div>
+          <div class="pocket"></div>
+          <div class="flap"></div>
+          
+        </div>
+      </button>
+      <div class="ground-shadow"></div>
+    </div>
+
+  </main>
+
+  <div class="scrim" id="scrim"></div>
+
+<script>
+  // ------- Contenido de cada carta -------
+  // Reemplaza estos textos por los tuyos cuando me los pases.
+  const letters = {
+    "1": {
+      title: "Mi amor hacia ti",
+      body: `Si algún día pudieras entrar a mi corazón y ver lo mucho que te amo créeme que entenderías el porqué estoy tan enamorado de ti, desde que estamos juntos cada día me empresionas más, como puedes ser una niña tan linda e increíble mi amor.
+
+Amo mucho tu manera de ser, como me tratas tan bonito, en especial cuando me dices “mi niño” mi corazón explotaaa, al escucharte hablar como bebé se me derrite el corazón al escuchar lo tierna que eres, con tus fotos me pierdo en esa carita y mirada tan bella que tienes mi niña, y desde que vi tus fotos me enamoré de tu belleza, y al ver que lo nuestro era mutuo no sabes lo bonito que sintió mi corazón, más cuando me decías “guapo” y como me tratas tan lindo siempre, yo nunca me arrepentiré de aver conocido una niña tan increíble como lo eres tú mi niña, y espero tener la oportunidad de estar contigo siempre, te amo mucho mi niña`,
+    },
+    "2": {
+      title: "Lo mucho que te extraño",
+      body: `Esto viene pegado junto con el amor que te tengo, pues realmente te extraño mucho cuando no hablamos, te ocupas o no estando juntos, a todos lados que voy siempre pienso “cómo sería si mi niña estuviera acá?” Y tengo muchísimas ganas de ver esos ojitos en persona, poder abrazarte y darte mucho cariño.
+
+Desde que me contaste que soñaste sobre tú y yo en esa cafetería siempre pienso en eso, y lo lindo que sería pasar una tarde contigo mi amor, tú y yo, tomando algo, agarraos de la mano o sentada arriba mío, mientras te lleno de besitos y me pierdo en tu mirada mientras te agarro de la cintura, y porfin demostrar todo el amor y cariño que le tengo a mi bebé, no solo con palabras, si no con todos los planes que tengo contigo mi amor, y tengo muchas sorpresas y planes contigo mi niña, pronto vas a tener unoo muy especial el cual llevo planeando semanas 👀`,
+    },
+    "3": {
+      title: "Todo lo que quiero vivir contigo",
+      body: `Tengo muchas ideas de citas pero en especial me interesa mucho:
+
+• Nuestro primer beso
+• Verte a los ojos por primera vez
+• Ver tu sonrisita
+• Tener nuestra primera cita
+• Conocer a tu mamá
+• Ir al cine juntos
+• Tener un picnic
+• Tenerte en mis brazos por primera vez
+• Dormir juntitos
+• Que te quedes dormida en mis brazos
+• Una cena romántica
+• Cocinar juntos
+• Que conozcas a mis papás
+• Lograr nuestras metas juntos
+• Declararme hacia ti 👀
+• Estar jugando juntos (tú en mis piernas)
+• Combinar outfits
+• Estar juntos toda la vida 💗`,
+    }
+  };
+
+  const scrim = document.getElementById('scrim');
+  let activeReader = null;
+  let activeWrap = null;
+  let animating = false;
+
+  function openEnvelope(wrap, id){
+    if(animating) return;
+    animating = true;
+    wrap.classList.add('open');
+
+    // Tras el peek, la hoja "sale" y vuela al centro
+    setTimeout(() => flyToCenter(wrap, id), 650);
+  }
+
+  function flyToCenter(wrap, id){
+    const paperSource = wrap.querySelector('.paper');
+    const rect = paperSource.getBoundingClientRect();
+
+    const clone = document.createElement('div');
+    clone.className = 'reader-paper';
+    clone.innerHTML = `
+      <button class="close-btn" aria-label="Cerrar carta">✕</button>
+      <div class="reader-inner">
+        <div class="reader-content">
+          <div class="mini-seal"></div>
+          <div class="letter-title">${letters[id].title}</div>
+          <div class="letter-body">${letters[id].body}</div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(clone);
+
+    // estado inicial: exactamente donde está la hoja asomando del sobre
+    Object.assign(clone.style, {
+      top: rect.top + 'px',
+      left: rect.left + 'px',
+      width: rect.width + 'px',
+      height: rect.height + 'px',
+      borderRadius: '3px',
+      boxShadow: '0 2px 5px rgba(120,84,30,0.14)'
+    });
+
+    paperSource.style.opacity = '0';
+    scrim.classList.add('show');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        // estado final: pantalla completa real, medida en px (fiable en móvil)
+        Object.assign(clone.style, {
+          top: '0px',
+          left: '0px',
+          width: window.innerWidth + 'px',
+          height: window.innerHeight + 'px',
+          borderRadius: '0px',
+          boxShadow: '0 0 0 rgba(0,0,0,0)'
+        });
+        clone.classList.add('expanded');
+      });
+    });
+
+    clone.querySelector('.close-btn').addEventListener('click', () => closeReader(clone, wrap));
+    scrim.addEventListener('click', () => closeReader(clone, wrap), { once: true });
+
+    activeReader = clone;
+    activeWrap = wrap;
+    animating = false;
+  }
+
+  function closeReader(clone, wrap){
+    if(animating) return;
+    animating = true;
+    const paperSource = wrap.querySelector('.paper');
+    const rect = paperSource.getBoundingClientRect();
+
+    clone.classList.remove('expanded');
+    Object.assign(clone.style, {
+      top: rect.top + 'px',
+      left: rect.left + 'px',
+      width: rect.width + 'px',
+      height: rect.height + 'px',
+      borderRadius: '3px',
+      boxShadow: '0 2px 5px rgba(120,84,30,0.14)'
+    });
+    scrim.classList.remove('show');
+
+    setTimeout(() => {
+      clone.remove();
+      paperSource.style.opacity = '1';
+      wrap.classList.remove('open');
+      animating = false;
+      activeReader = null;
+      activeWrap = null;
+    }, 650);
+  }
+
+  document.querySelectorAll('.envelope-wrap').forEach(wrap => {
+    const btn = wrap.querySelector('.envelope-btn');
+    const id = wrap.dataset.letter;
+    btn.addEventListener('click', () => {
+      if(!wrap.classList.contains('open')) openEnvelope(wrap, id);
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && activeReader) closeReader(activeReader, activeWrap);
+  });
+
+  window.addEventListener('resize', () => {
+    if(activeReader && activeReader.classList.contains('expanded')){
+      activeReader.style.width = window.innerWidth + 'px';
+      activeReader.style.height = window.innerHeight + 'px';
+    }
+  });
+</script>
+
+</body>
+</html>
