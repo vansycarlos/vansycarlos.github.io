@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover" />
+    <title>Hub</title>
+    <style>
+      :root {
+        --paper: #fff9f0;
+        --paper-edge: #f1d8c7;
+        --cover: #f7b7c7;
+        --cover-deep: #e99db2;
+        --butter: #ffe5a8;
+        --background: #fff1df;
+        --progress: #e99db2;
+        --shadow: rgba(121, 87, 111, 0.28);
+        --cream: #fffdf8;
+      }
+
+      * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+      html, body {
+        margin: 0;
+        min-height: 100vh;
+        min-height: 100dvh;
+        background: var(--background);
+        overflow: hidden;
+        overscroll-behavior: none;
+      }
+
+      /* ── Welcome Modal ── */
+      .welcome-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(255, 241, 223, 0.72);
+        backdrop-filter: blur(10px);
+        transition: opacity 220ms ease, visibility 220ms ease;
+      }
+      .welcome-modal.is-hidden {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .welcome-card {
+        width: min(420px, 100%);
+        padding: 30px 28px 26px;
+        border: 1px solid rgba(255, 255, 255, 0.78);
+        border-radius: 8px;
+        background: rgba(255, 253, 248, 0.92);
+        box-shadow: 0 28px 70px rgba(181, 134, 150, 0.22);
+        text-align: center;
+      }
+      .welcome-card p {
+        margin: 0 0 22px;
+        color: #8f6472;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(1.1rem, 4vw, 1.45rem);
+        line-height: 1.5;
+      }
+      .welcome-button {
+        min-width: 112px;
+        height: 42px;
+        border: 0;
+        border-radius: 999px;
+        color: #fffdf8;
+        background: var(--cover-deep);
+        box-shadow: 0 12px 24px rgba(181, 134, 150, 0.22);
+        cursor: pointer;
+        font: 700 0.95rem Arial, sans-serif;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .welcome-button:hover,
+      .welcome-button:focus-visible {
+        background: #dc8da6;
+        transform: translateY(-1px);
+        outline: none;
+      }
+
+      /* ── Scene ── */
+      .love-scene {
+        position: relative;
+        min-height: 100vh;
+        min-height: 100dvh;
+        isolation: isolate;
+      }
+
+      /* ── Carrusel Hub (pantalla completa, móvil) ── */
+      .carousel {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+        touch-action: pan-y;
+        user-select: none;
+        -webkit-user-select: none;
+      }
+
+      .carousel-track {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .carousel-slides {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        transition: transform 420ms cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      .slide {
+        position: relative;
+        flex: 0 0 100%;
+        width: 100%;
+        height: 100%;
+      }
+
+      .slide img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        -webkit-touch-callout: none;
+        pointer-events: none;
+      }
+
+      .go-button {
+        position: absolute;
+        left: 50%;
+        bottom: calc(40px + env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        min-width: 150px;
+        height: 48px;
+        border: 0;
+        border-radius: 999px;
+        color: #fffdf8;
+        background: var(--cover-deep);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        font: 700 1.05rem Arial, sans-serif;
+        transition: transform 160ms ease, background 160ms ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 3;
+      }
+      .go-button:hover,
+      .go-button:focus-visible {
+        background: #dc8da6;
+        transform: translateX(-50%) translateY(-2px);
+        outline: none;
+      }
+      .go-button:active {
+        transform: translateX(-50%) scale(0.96);
+      }
+
+      .carousel-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 46px;
+        height: 46px;
+        border: 1px solid rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.28);
+        color: var(--cream);
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        z-index: 4;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+      .carousel-arrow:hover,
+      .carousel-arrow:focus-visible {
+        background: rgba(0, 0, 0, 0.42);
+        outline: none;
+      }
+      .carousel-arrow.prev { left: 10px; }
+      .carousel-arrow.next { right: 10px; }
+      .carousel-arrow:disabled {
+        opacity: 0.35;
+        cursor: not-allowed;
+      }
+
+      .arrow-chevron {
+        width: 10px;
+        height: 10px;
+        border-top: 2px solid currentColor;
+        border-right: 2px solid currentColor;
+      }
+      .arrow-chevron.left  { transform: rotate(-135deg); }
+      .arrow-chevron.right { transform: rotate(45deg); }
+
+      .carousel-dots {
+        position: absolute;
+        left: 50%;
+        bottom: calc(14px + env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        z-index: 4;
+      }
+
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        transition: background 160ms ease, transform 160ms ease;
+      }
+      .dot.is-active {
+        background: #fff;
+        transform: scale(1.2);
+      }
+
+      /* ── Ajustes finos en pantallas pequeñas ── */
+      @media (max-width: 480px) {
+        .go-button {
+          bottom: calc(112px + env(safe-area-inset-bottom));
+          min-width: 130px;
+          height: 44px;
+          font-size: 0.95rem;
+        }
+        .carousel-dots {
+          bottom: calc(70px + env(safe-area-inset-bottom));
+        }
+        .carousel-arrow {
+          width: 40px;
+          height: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="welcome-modal" id="welcomeModal" role="dialog" aria-modal="true" aria-labelledby="welcomeMessage">
+      <div class="welcome-card">
+        <p id="welcomeMessage">
+          Hola mi amorr, diseñe este pequeño Hub donde adjunto todos las cosas que te he hecho
+          esta disponible para que lo veas siempre, te amooo
+        </p>
+        <button class="welcome-button" id="closeWelcome" type="button">Abrir</button>
+      </div>
+    </div>
+
+    <main class="love-scene">
+      <div class="carousel" id="carousel">
+        <div class="carousel-track">
+          <button class="carousel-arrow prev" id="prevSlide" type="button" aria-label="Anterior">
+            <span class="arrow-chevron left"></span>
+          </button>
+
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="slide">
+              <img src="assets/C1.png" alt="50 Razones para Amarte" />
+              <a class="go-button" href="https://vansycarlos.github.io/libro.html">Ir</a>
+            </div>
+            <div class="slide">
+              <img src="assets/C2.png" alt="Querida Vanessa" />
+              <a class="go-button" href="https://vansycarlos.github.io/razones.html">Ir</a>
+            </div>
+            <div class="slide">
+              <img src="assets/C3.png" alt="Cartas para ti" />
+              <a class="go-button" href="https://vansycarlos.github.io/cartas.html">Ir</a>
+            </div>
+            <div class="slide">
+              <img src="assets/C4.png" alt="Nuestra playlist" />
+              <a class="go-button" href="https://vansycarlos.github.io/playlist.html">Ir</a>
+            </div>
+          </div>
+
+          <button class="carousel-arrow next" id="nextSlide" type="button" aria-label="Siguiente">
+            <span class="arrow-chevron right"></span>
+          </button>
+        </div>
+
+        <div class="carousel-dots" id="carouselDots">
+          <button class="dot is-active" data-index="0" aria-label="Ir a la diapositiva 1"></button>
+          <button class="dot" data-index="1" aria-label="Ir a la diapositiva 2"></button>
+          <button class="dot" data-index="2" aria-label="Ir a la diapositiva 3"></button>
+          <button class="dot" data-index="3" aria-label="Ir a la diapositiva 4"></button>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      // ── DOM refs ─────────────────────────────────────────────
+      const welcomeModal    = document.querySelector("#welcomeModal");
+      const closeWelcomeBtn = document.querySelector("#closeWelcome");
+
+      // ── Event listeners ─────────────────────────────────────
+      closeWelcomeBtn.addEventListener("click", () => {
+        welcomeModal.classList.add("is-hidden");
+      });
+      welcomeModal.addEventListener("click", (e) => {
+        if (e.target === welcomeModal) welcomeModal.classList.add("is-hidden");
+      });
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") welcomeModal.classList.add("is-hidden");
+      });
+
+      // ── Carrusel Hub ─────────────────────────────────────────
+      const slidesTrack = document.querySelector("#carouselSlides");
+      const slides       = document.querySelectorAll(".slide");
+      const prevSlideBtn = document.querySelector("#prevSlide");
+      const nextSlideBtn = document.querySelector("#nextSlide");
+      const dots         = document.querySelectorAll(".dot");
+
+      let currentSlide = 0;
+      const totalSlides = slides.length;
+
+      function updateCarousel() {
+        slidesTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, i) => dot.classList.toggle("is-active", i === currentSlide));
+        prevSlideBtn.disabled = currentSlide === 0;
+        nextSlideBtn.disabled = currentSlide === totalSlides - 1;
+      }
+
+      function goToSlide(index) {
+        currentSlide = Math.max(0, Math.min(totalSlides - 1, index));
+        updateCarousel();
+      }
+
+      prevSlideBtn.addEventListener("click", () => goToSlide(currentSlide - 1));
+      nextSlideBtn.addEventListener("click", () => goToSlide(currentSlide + 1));
+      dots.forEach((dot) => {
+        dot.addEventListener("click", () => goToSlide(Number(dot.dataset.index)));
+      });
+
+      // Swipe táctil / mouse
+      let touchStartX = 0;
+      let touchStartY = 0;
+      let touchDeltaX  = 0;
+      let isSwiping    = false;
+
+      slidesTrack.addEventListener("pointerdown", (e) => {
+        touchStartX = e.clientX;
+        touchStartY = e.clientY;
+        touchDeltaX  = 0;
+        isSwiping    = true;
+        slidesTrack.style.transition = "none";
+      });
+
+      slidesTrack.addEventListener("pointermove", (e) => {
+        if (!isSwiping) return;
+        const dx = e.clientX - touchStartX;
+        const dy = e.clientY - touchStartY;
+        if (Math.abs(dx) > Math.abs(dy)) {
+          e.preventDefault();
+          touchDeltaX = dx;
+          const percent = (touchDeltaX / window.innerWidth) * 100;
+          slidesTrack.style.transform = `translateX(calc(-${currentSlide * 100}% + ${percent}%))`;
+        }
+      }, { passive: false });
+
+      function endSwipe() {
+        if (!isSwiping) return;
+        isSwiping = false;
+        slidesTrack.style.transition = "";
+        if (Math.abs(touchDeltaX) > 60) {
+          goToSlide(currentSlide + (touchDeltaX < 0 ? 1 : -1));
+        } else {
+          updateCarousel();
+        }
+        touchDeltaX = 0;
+      }
+
+      slidesTrack.addEventListener("pointerup", endSwipe);
+      slidesTrack.addEventListener("pointercancel", endSwipe);
+      slidesTrack.addEventListener("pointerleave", endSwipe);
+
+      updateCarousel();
+    </script>
+  </body>
+</html>
