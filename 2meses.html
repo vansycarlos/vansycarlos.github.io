@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Para Ti ❤️</title>
+  
+  <!-- Tipografías elegantes y de alta gama -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,600&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #0a0b0e;
+      --bg-card: rgba(16, 18, 26, 0.78);
+      --gold-primary: #d4af37;
+      --gold-light: #f5e8c4;
+      --text-main: #e8e2d8;
+      --border-gold: rgba(212, 175, 55, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      min-height: 100vh;
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 50% 20%, rgba(100, 35, 45, 0.25) 0%, transparent 65%),
+        radial-gradient(circle at 15% 85%, rgba(212, 175, 55, 0.06) 0%, transparent 50%),
+        radial-gradient(circle at 85% 80%, rgba(70, 25, 35, 0.2) 0%, transparent 50%);
+      color: var(--text-main);
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Fondo de estrellas tenues */
+    #stars-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Contenedor tipo carta limpia */
+    .letter-container {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+      width: 100%;
+      background: var(--bg-card);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid var(--border-gold);
+      border-radius: 20px;
+      padding: 50px 45px 44px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), inset 0 0 35px rgba(212, 175, 55, 0.02);
+      animation: fadeIn 1.2s ease-out;
+    }
+
+    /* Esquinas doradas sutiles */
+    .corner {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border: 1px solid var(--gold-primary);
+      opacity: 0.5;
+    }
+
+    .top-left { top: 14px; left: 14px; border-right: none; border-bottom: none; }
+    .top-right { top: 14px; right: 14px; border-left: none; border-bottom: none; }
+    .bottom-left { bottom: 14px; left: 14px; border-right: none; border-top: none; }
+    .bottom-right { bottom: 14px; right: 14px; border-left: none; border-top: none; }
+
+    /* Texto plano, fluido y elegante */
+    .letter-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      line-height: 1.95;
+      color: #ede7dc;
+      text-align: justify;
+      hyphens: auto;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+    }
+
+    /* Pie de carta: corazón y firma */
+    .signature-area {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .heart-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #e05368;
+      font-size: 1.35rem;
+      animation: heartbeat 2.2s infinite ease-in-out;
+      filter: drop-shadow(0 0 10px rgba(224, 83, 104, 0.45));
+      margin-bottom: 2px;
+    }
+
+    @keyframes heartbeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      14% {
+        transform: scale(1.18);
+      }
+      28% {
+        transform: scale(1);
+      }
+      42% {
+        transform: scale(1.14);
+      }
+      70% {
+        transform: scale(1);
+      }
+    }
+
+    .signature-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      font-style: italic;
+      color: var(--gold-light);
+      letter-spacing: 1px;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .letter-container {
+        padding: 36px 24px 30px;
+      }
+      .letter-text {
+        font-size: 1.22rem;
+        line-height: 1.85;
+        text-align: left;
+      }
+      .signature-name {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Fondo sutil de estrellas titilantes -->
+  <canvas id="stars-canvas"></canvas>
+
+  <main class="letter-container">
+    <div class="corner top-left"></div>
+    <div class="corner top-right"></div>
+    <div class="corner bottom-left"></div>
+    <div class="corner bottom-right"></div>
+
+    <p class="letter-text">
+      Hoy es un día muy especial en nuestra relación, pues cumplimos 2 meses desde que empezamos esta gran aventura juntos de la mano, y es la mejor desicion que pude tomar el pedirle ser mi novia a la niña más hermosa del universo, y tú siempre serás la dueña de mi corazón y la niña que siempre amaré, y espero poder ver tus ojitos pronto para poder llenarte de besitos y darte mucho amor, te amo muchoo mi niña y espero la vida nos de más momentos y cosas bonitas juntos, te amo mucho amorcito, tú siempre serás la mejor noviecita del universo y te amaré con todo mi corazón
+    </p>
+
+    <!-- Corazón con latido sutil y firma -->
+    <div class="signature-area">
+      <div class="heart-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+      </div>
+      <div class="signature-name">- Carlos</div>
+    </div>
+  </main>
+
+  <script>
+    // Fondo de cielo estrellado suave
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars();
+    }
+
+    function initStars() {
+      stars = [];
+      const count = Math.floor((canvas.width * canvas.height) / 9000);
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          radius: Math.random() * 1.2,
+          alpha: Math.random(),
+          speed: Math.random() * 0.012 + 0.004
+        });
+      }
+    }
+
+    function drawStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) {
+          star.speed = -star.speed;
+        }
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(245, 232, 196, ${Math.abs(star.alpha) * 0.65})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+    drawStars();
+  </script>
+</body>
+</html>
